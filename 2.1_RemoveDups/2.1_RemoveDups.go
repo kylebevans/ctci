@@ -26,6 +26,7 @@ func (l *LinkedList) Append(d int) {
   }
   currentNode.next = lnew
   lnew.prev = currentNode
+  l.tail = lnew
   return
 }
 
@@ -39,9 +40,13 @@ func (l *LinkedList) Delete(d int) *LinkedList {
   }
 
   for currentNode.next != nil {
-    if currentNode.data == d {
-      currentNode.prev.next = currentNode.next
-      currentNode.next.prev = currentNode.prev
+    if currentNode.next.data == d {
+      currentNode.next = currentNode.next.next
+      if currentNode.next != nil {
+        currentNode.next.prev = currentNode
+      } else {
+        l.tail = currentNode
+      }
       return l
     }
     currentNode = currentNode.next
@@ -51,27 +56,24 @@ func (l *LinkedList) Delete(d int) *LinkedList {
 
 func (l *LinkedList) RemoveDups() *LinkedList {
   var hits map[int][]*(Node)
+  hits = make(map[int][]*(Node))
 
   currentNode := l.head
-  for currentNode.next != nil {
-    hits[currentNode.data] = append(hits[currentNode.data], currentNode)
-  }
 
-  for _, v := range hits {
-    for i := 0; i < len(v)-1; i++ {
-      if v[i] == l.head {
-        l.head = v[i].next
-        v[i].next.prev = nil
-        continue
+  hits[currentNode.data] = append(hits[currentNode.data], currentNode)
+
+  for currentNode.next != nil {
+    currentNode = currentNode.next
+    if len(hits[currentNode.data]) > 0 {
+      if currentNode == l.tail {
+        l.tail = currentNode.prev
+        currentNode.prev.next = nil
+      } else {
+        currentNode.prev.next = currentNode.next
+        currentNode.next.prev = currentNode.prev
       }
-      if v[i] == l.tail {
-        l.tail = v[i].prev
-        v[i].prev.next = nil
-        continue
-      }
-      v[i].prev.next = v[i].next
-      v[i].next.prev = v[i].prev
     }
+    hits[currentNode.data] = append(hits[currentNode.data], currentNode)
   }
   return l
 }

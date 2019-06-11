@@ -77,4 +77,32 @@ func (l *LinkedList) RemoveDups() *LinkedList {
   }
   return l
 }
+
+func (l *LinkedList) RemoveDupsNoBuffer() *LinkedList {
+  currentNode := l.head
+  for currentNode.next != nil {
+    innerNode := currentNode
+    for innerNode.next != nil {
+      if innerNode.next.data == currentNode.data {
+        if innerNode.next == l.tail {
+          l.tail = innerNode
+          innerNode.next = nil
+          continue
+        } else {
+          innerNode.next.next.prev = innerNode
+          innerNode.next = innerNode.next.next
+        }
+        continue
+      }
+      innerNode = innerNode.next
+    }
+    if currentNode == l.tail {
+      return l
+    } else {
+      currentNode = currentNode.next
+    }
+  }
+  return l
+}
+
  

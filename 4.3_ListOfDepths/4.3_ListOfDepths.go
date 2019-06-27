@@ -108,11 +108,6 @@ func ListOfDepths(tree Graph) map[int]*LinkedList {
   m := make(map[int]*LinkedList)
   visited := make(map[int]bool)
   var depth int
-  rootList := new(LinkedList)
-  rootNode := new(ListNode)
-  rootNode.data = tree.root
-  rootList.head = rootNode
-  rootList.tail = rootNode
 
   kyoo := new(Queue)
   depthq := new(Queue)

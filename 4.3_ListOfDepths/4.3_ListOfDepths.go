@@ -2,6 +2,7 @@ package main
 
 import (
   "fmt"
+  "log"
 )
 
 type ListNode struct {
@@ -104,6 +105,15 @@ func (g *Graph) Delete(node int) {
   return
 }
 
+func (g Graph) IsInAdjacency(parent int, current int) bool {
+  for _, v := range g.edges[parent] {
+    if v == current {
+      return true
+    }
+  }
+  return false
+}
+
 func ListOfDepths(tree Graph) map[int]*LinkedList {
   m := make(map[int]*LinkedList)
   visited := make(map[int]bool)
@@ -127,6 +137,8 @@ func ListOfDepths(tree Graph) map[int]*LinkedList {
       if !visited[v] {
         kyoo.Enqueue(v)
         depthq.Enqueue(depth+1)
+      } else if !tree.IsInAdjacency(v, nodey) {
+        log.Fatalf("cycle detected: %v\n", v)
       }
     }
   }
